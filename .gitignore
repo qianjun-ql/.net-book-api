@@ -1,0 +1,40 @@
+# Ignore build outputs
+bin/
+obj/
+
+# Ignore Visual Studio temporary files, build results, and
+.vscode/
+.vs/
+
+# Ignore Rider IDE files
+.idea/
+
+# Ignore user-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Ignore app settings if you don't want to include sensitive data
+appsettings.Development.json
+appsettings.json
+
+# Ignore NuGet packages
+*.nupkg
+*.snupkg
+project.lock.json
+project.fragment.lock.json
+
+# Ignore logs
+*.log
+logs/
+
+# Ignore .NET Core build files
+*.dll
+*.pdb
+*.exe
+*.cache
+*.csproj.nuget.g.props
+*.csproj.nuget.g.targets
+*.nuget.cache
+project.assets.json
