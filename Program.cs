@@ -7,9 +7,11 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using BookServicesApi.Models;
 using BookServicesApi.Data;
+using BookServicesApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add service to container
 builder.Services.AddDbContext<BookWebApiContext>(options =>
 {
     var connectionString = builder.Configuration.GetConnectionString("MyDatabaseConnection");
@@ -19,6 +21,13 @@ builder.Services.AddDbContext<BookWebApiContext>(options =>
     }
     options.UseSqlServer(connectionString);
 });
+
+// Register service
+builder.Services.AddScoped<AuthorService>();
+
+// Add Controllers to the services
+builder.Services.AddControllers();
+
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -41,6 +50,9 @@ var summaries = new[]
 {
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
 };
+
+// Map controller routes
+app.MapControllers();
 
 app.MapGet("/weatherforecast", () =>
 {
