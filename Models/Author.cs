@@ -10,11 +10,11 @@ namespace BookServicesApi.Models {
 
         [Required]
         [MaxLength(50)]
-        public string firstName {get; set;}
+        public string FirstName {get; set;}
 
         [Required]
         [MaxLength(50)]
-        public string lastName {get;set;}
+        public string LastName {get;set;}
 
         [Required]
         [MaxLength(50)]
@@ -27,10 +27,10 @@ namespace BookServicesApi.Models {
         public string City {get;set;}
 
         [MaxLength(2)]
-        public string State {get;set;}
+        public string Province {get;set;}
 
         [MaxLength(10)]
-        public string zipCode {get; set;}
+        public string ZipCode {get; set;}
 
         [Phone]
         [MaxLength(20)]

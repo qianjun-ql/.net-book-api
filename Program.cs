@@ -8,6 +8,10 @@ using Microsoft.Extensions.Configuration;
 using BookServicesApi.Models;
 using BookServicesApi.Data;
 using BookServicesApi.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,9 +26,34 @@ builder.Services.AddDbContext<BookWebApiContext>(options =>
     options.UseSqlServer(connectionString);
 });
 
+builder.Services.AddIdentity<User, IdentityRole>()
+.AddEntityFrameworkStores<BookWebApiContext>()
+.AddDefaultTokenProviders();
+
+builder.Services.AddAuthentication(options => {
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+
+.AddJwtBearer(options => {
+    options.TokenValidationParameters = new TokenValidationParameters {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+    };
+});
+
+//Add authorization service
+builder.Services.AddAuthorization();
+
 // Register service
 builder.Services.AddScoped<AuthorService>();
 builder.Services.AddScoped<BookService>();
+builder.Services.AddScoped<AuthService>();
 
 // Add Controllers to the services
 builder.Services.AddControllers();
@@ -51,6 +80,10 @@ var summaries = new[]
 {
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
 };
+
+//use authentication and authorization middleware
+app.UseAuthentication();
+app.UseAuthorization();
 
 // Map controller routes
 app.MapControllers();
