@@ -24,7 +24,7 @@ namespace BookServicesApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Author>> GetAuthors(int id)
+        public async Task<ActionResult<Author>> GetAuthorById(int id)
         {
             var authors = await _authorService.GetAuthorByIdAsync(id);
 
@@ -63,25 +63,27 @@ namespace BookServicesApi.Controllers
             return NoContent();
         }
 
-public async Task<ActionResult<Author>> PostAuthors(Author authors)
-{
-    try
+    [HttpPost]
+    public async Task<ActionResult<Author>> PostAuthors(Author authors)
     {
-        if (!ModelState.IsValid)
+        try
         {
-            return BadRequest(ModelState);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            
+            await _authorService.AddAuthorAsync(authors);
+            return CreatedAtAction("GetAuthors", new { id = authors.Id }, authors);
         }
-        
-        await _authorService.AddAuthorAsync(authors);
-        return CreatedAtAction("GetAuthors", new { id = authors.Id }, authors);
+        catch (Exception ex)
+        {
+            // Log the exception
+            Console.WriteLine(ex.Message);
+            return StatusCode(500, "Internal server error");
+        }
     }
-    catch (Exception ex)
-    {
-        // Log the exception
-        Console.WriteLine(ex.Message);
-        return StatusCode(500, "Internal server error");
-    }
-}
+    
         [HttpDelete("{id}")]
         public async Task<ActionResult<Author>> DeleteAuthors(int id)
         {

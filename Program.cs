@@ -24,6 +24,7 @@ builder.Services.AddDbContext<BookWebApiContext>(options =>
 
 // Register service
 builder.Services.AddScoped<AuthorService>();
+builder.Services.AddScoped<BookService>();
 
 // Add Controllers to the services
 builder.Services.AddControllers();

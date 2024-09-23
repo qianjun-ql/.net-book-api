@@ -8,25 +8,34 @@ using Microsoft.EntityFrameworkCore;
 namespace BookServicesApi.Services {
     public class BookService {
         private readonly BookWebApiContext _context;
+        private readonly AuthorService _authorService;
 
-        public BookService(BookWebApiContext context) {
+        public BookService(BookWebApiContext context, AuthorService authorService) {
             _context = context;
+            _authorService = authorService;
         }
 
         public async Task<List<Book>> GetAllBooksAsync() {
-            return await _context.Books.ToListAsync();
+            return await _context.Books
+            .Include(b => b.Author)
+            .ToListAsync();
         }
 
-        public async Task<Book> getBookByIdAsync(int id) {
-            return await _context.Books.FindAsync(id);
+        public async Task<Book> GetBookByIdAsync(int id) {
+            return await _context.Books
+            .Include(b => b.Author) 
+            .FirstOrDefaultAsync(b => b.Id == id);
         }
-
+                      
         public async Task UpdateBookAsync(Book books) {
             _context.Entry(books).State = EntityState.Modified;
             await _context.SaveChangesAsync();
         }
 
         public async Task AddBookAsync(Book books) {
+            if (!_authorService.AuthorsExist(books.AuthorId)) {
+                throw new Exception("Author does not exist");
+            }
             _context.Books.Add(books);
             await _context.SaveChangesAsync();
         }

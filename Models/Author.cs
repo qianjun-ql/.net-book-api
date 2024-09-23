@@ -1,11 +1,20 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace BookServicesApi.Models {
     public class Author {
         [Key]
         public int Id {get; set;}
+
+        [Required]
+        [MaxLength(50)]
+        public string firstName {get; set;}
+
+        [Required]
+        [MaxLength(50)]
+        public string lastName {get;set;}
 
         [Required]
         [MaxLength(50)]
@@ -30,6 +39,9 @@ namespace BookServicesApi.Models {
         [EmailAddress]
         [MaxLength(60)]
         public string Email {get;set;}
+
+        [JsonIgnore]
+        public ICollection<Book>? Books { get; set; }
 
 
 }
