@@ -48,6 +48,7 @@ builder.Services.AddAuthentication(options => {
 });
 
 //Add authorization service
+builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 builder.Services.AddAuthorization();
 
 // Register service

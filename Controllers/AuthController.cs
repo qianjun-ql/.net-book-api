@@ -39,6 +39,23 @@ namespace BookServicesApi.Controllers {
             }
             return BadRequest(ModelState);
         }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginModel model) {
+            if (!ModelState.IsValid) {
+                return BadRequest(ModelState);
+            }
+
+            var user = await _authService.FindUserByEmailAsync(model.Email);
+            if (user == null | !await _authService.CheckPasswordAsync(user,model.Password)) {
+                return Unauthorized(new {Message = "Invalid email or password"});
+            }
+
+            var token = _authService.GenerateJwtToken(user);
+
+            return Ok(new {Token = token});
+
+        }
     }
 
 }
